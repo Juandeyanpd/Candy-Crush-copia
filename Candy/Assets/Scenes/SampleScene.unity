@@ -227,8 +227,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
-  altura: 8
-  ancho: 8
+  altura: 7
+  ancho: 6
+  cam: {fileID: 519420031}
 --- !u!4 &723624296
 Transform:
   m_ObjectHideFlags: 0

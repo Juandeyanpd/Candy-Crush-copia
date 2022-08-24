@@ -12,6 +12,8 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
+        OrganizarCam();
+
         board = new Tile[altura, ancho];
 
         for(int i = 0; i < altura; i++)
@@ -19,16 +21,22 @@ public class Board : MonoBehaviour
             for(int j = 0; j < ancho; j++)
             {
                 GameObject go = Instantiate(prefab);
-                go.transform.position = new Vector2(i, j);
-                go.name = "Tile : ( "+i+" , "+j+" ) "; 
+                go.transform.position = new Vector2(j, i);
+                go.name = "Tile : ( "+j+" , "+i+" ) "; 
                 go.transform.parent = transform;
 
                 Tile tile = go.GetComponent<Tile>();
                 board[i, j] = tile;
                 tile.Intial( i, j);
 
+
             }
         }
 
+    }
+
+    void OrganizarCam()
+    {
+        cam.transform.position = new Vector3(((float)ancho / 2) - .5f, ((float)altura / 2) - .5f, -10);
     }
 }
