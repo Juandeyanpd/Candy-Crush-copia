@@ -40,7 +40,6 @@ public class Board : MonoBehaviour
         }
     }
 
-
     void OrganizarCam()
     {
         cam.transform.position = new Vector3(((float)ancho / 2) - .5f, ((float)altura / 2) - .5f, -10);
@@ -68,15 +67,12 @@ public class Board : MonoBehaviour
 
     void LlenarMatriz()
     {
-        //posiciones = new GamePiece[altura, ancho];
-
         for(int i = 0; i < altura; i++)
         {
             for (int j = 0; j < ancho; j++)
             {
                 GameObject go = PiezaAleatoria();
                 PiezaPosicion(go.GetComponent<GamePiece>(), j, i);
-
             }
         }
     }
