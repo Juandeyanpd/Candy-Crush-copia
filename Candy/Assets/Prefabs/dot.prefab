@@ -97,3 +97,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cordenadaX: 0
   cordenadaY: 0
+  tiempoMovimiento: 0.5

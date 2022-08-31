@@ -227,8 +227,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
-  altura: 4
-  ancho: 4
+  altura: 2
+  ancho: 2
   cam: {fileID: 519420031}
   borde: 1
   prefab_Pieces:
