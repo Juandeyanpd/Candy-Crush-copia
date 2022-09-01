@@ -9,6 +9,7 @@ public class GamePiece : MonoBehaviour
 
     public float tiempoMovimiento;
     bool seEjecuto = true;
+    public AnimationCurve curve;
 
     public TipoInterpolacion tipoInterpolacion;
 
@@ -41,15 +42,15 @@ public class GamePiece : MonoBehaviour
             switch(tipoInterpolacion)
             {
                 case TipoInterpolacion.Lineal:
-
+                    t = curve.Evaluate(t);
                 break;
 
                 case TipoInterpolacion.Entrada:
-
+                    t = 1 - Mathf.Cos(t * Mathf.PI * .5f);
                 break;
 
                 case TipoInterpolacion.Salida:
-
+                    t = Mathf.Sin(t * Mathf.PI * .5f);
                 break;
 
                 case TipoInterpolacion.Suavizado:

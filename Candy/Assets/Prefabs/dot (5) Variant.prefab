@@ -27,6 +27,82 @@ PrefabInstance:
       propertyPath: tiempoMovimiento
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[1].time
+      value: 0.66163886
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[2].time
+      value: 0.8478831
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[3].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[1].value
+      value: 0.54526174
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[2].value
+      value: 0.85158515
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[3].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[1].inSlope
+      value: 1.4978136
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[2].inSlope
+      value: 0.60585356
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[3].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[1].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[1].outSlope
+      value: 1.4978136
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[2].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[2].outSlope
+      value: 0.60585356
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[3].inWeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[3].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[1].outWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[2].outWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 6409598601032005881, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+      propertyPath: curve.m_Curve.Array.data[3].outWeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8045437787638571682, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
       propertyPath: m_RootOrder
       value: 0

@@ -11,7 +11,17 @@ public class Board : MonoBehaviour
     public Camera cam;
     public int borde;
     public GameObject[] prefab_Pieces;
+
     public GamePiece[,] posiciones;
+
+    public Tile inicial;
+    public Tile final;
+
+    /*public void ActualTile(Tile tile)
+    {
+        inicial.OnMouseDown(this);
+        final.OnMouseEnter(this);
+    }*/
 
     private void Start()
     {
@@ -34,6 +44,7 @@ public class Board : MonoBehaviour
                 go.transform.parent = transform;
 
                 Tile tile = go.GetComponent<Tile>();
+                tile.board = this;
                 board[i, j] = tile;
                 tile.Intial(i, j);
             }
