@@ -17,11 +17,6 @@ public class Board : MonoBehaviour
     public Tile inicial;
     public Tile final;
 
-    /*public void ActualTile(Tile tile)
-    {
-        inicial.OnMouseDown(this);
-        final.OnMouseEnter(this);
-    }*/
 
     private void Start()
     {
@@ -87,4 +82,32 @@ public class Board : MonoBehaviour
             }
         }
     }
+
+
+    public void InicioMouse(Tile ini)
+    {
+
+        if (inicial == null)
+        {
+            inicial = ini;
+        }
+
+    }
+    public void EndMouse(Tile fin)
+    {
+        if(inicial != null)
+        {
+            final = fin;
+        }
+
+    }
+    public void Realice(Tile rota)
+    {
+        if(inicial != null && final != null)
+        {
+            inicial = null;
+            final = null;
+        }
+    }
+
 }

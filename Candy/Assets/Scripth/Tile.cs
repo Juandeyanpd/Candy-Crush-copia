@@ -15,22 +15,18 @@ public class Tile : MonoBehaviour
         indiceY = cambioY;
     }
 
-    public void OnMouseDown(Board board)
+    private void OnMouseDown()
     {
-        board.inicial = this;
-        Debug.Log("Tocó");
-        //board.ActualTile(this);
+        board.InicioMouse(this);
     }
 
-    public void OnMouseEnter(Board board)
+    private void OnMouseEnter()
     {
-        board.final = this;
-        Debug.Log("Movio");
-        //board.ActualTile(this);
+        board.EndMouse(this);
     }
 
-    public void OnMouseUp(Board board)
+    private void OnMouseUp()
     {
-        Debug.Log("Soltó");
+        board.Realice(this);
     }
 }

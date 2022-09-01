@@ -13,11 +13,11 @@ public class GamePiece : MonoBehaviour
 
     public TipoInterpolacion tipoInterpolacion;
 
-    void MoverPieza(Vector3 posicionFinal, float timeMovement)
+    void MoverPieza(int x, int y, float timeMovement)
     {
         if(seEjecuto == true)
         {
-            StartCoroutine(Corrutine(posicionFinal, timeMovement));
+            StartCoroutine(Corrutine(new Vector3(x,y,0), timeMovement));
         }
     }
 
@@ -79,7 +79,7 @@ public class GamePiece : MonoBehaviour
         MasSuavizado
     }
 
-    private void Update()
+    /*private void Update()
     {
 
         if (Input.GetKey(KeyCode.UpArrow))
@@ -101,7 +101,7 @@ public class GamePiece : MonoBehaviour
         {
             MoverPieza(new Vector3(transform.position.x + 1, transform.position.y, 0), tiempoMovimiento);
         }
-    }
+    }*/
 
     public void Cordenada(int x, int y)
     {
