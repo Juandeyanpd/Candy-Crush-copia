@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
-  altura: 2
+  altura: 1
   ancho: 2
   cam: {fileID: 519420031}
   borde: 1
@@ -240,6 +240,8 @@ MonoBehaviour:
   - {fileID: 394250387474983709, guid: 966a2384b84a9444183e9093cb1d9ee0, type: 3}
   - {fileID: 6315874477298943564, guid: c344fd7117016684dab71e12fc37139a, type: 3}
   - {fileID: 1178404214875989426, guid: 5e3c1c4c2db28ea419d73745235980ce, type: 3}
+  inicial: {fileID: 0}
+  final: {fileID: 0}
 --- !u!4 &723624296
 Transform:
   m_ObjectHideFlags: 0

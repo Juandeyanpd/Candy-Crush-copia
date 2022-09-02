@@ -20,6 +20,7 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
+        posiciones = new GamePiece[ancho, altura];
         OrganizarCam();
         CrearBoard();
         LlenarMatriz();
@@ -27,21 +28,22 @@ public class Board : MonoBehaviour
 
     void CrearBoard() 
     {
-        board = new Tile[altura, ancho];
+        board = new Tile[ancho, altura];
 
-        for (int i = 0; i < altura; i++)
+        for (int x = 0; x < ancho; x++) //i para x
         {
-            for (int j = 0; j < ancho; j++)
+            for (int y = 0; y < altura; y++) //j para y
             {
                 GameObject go = Instantiate(prefab);
-                go.transform.position = new Vector2(j, i);
-                go.name = "Tile : ( " + j + " , " + i + " ) ";
+                go.name = "Tile : ( " + x + " , " + y + " ) ";
+                go.transform.position = new Vector2(x, y);
                 go.transform.parent = transform;
-
                 Tile tile = go.GetComponent<Tile>();
+                tile.Intial(x, y);
+                board[x, y] = tile; 
+                //board[ancho, altura]
+                //board[x, y]
                 tile.board = this;
-                board[i, j] = tile;
-                tile.Intial(i, j);
             }
         }
     }
@@ -66,19 +68,21 @@ public class Board : MonoBehaviour
         return go;
     }
 
-    void PiezaPosicion(GamePiece gp, int x, int y)
+    public void PiezaPosicion(GamePiece gp, int x, int y)
     {
         gp.transform.position = new Vector3(x, y, 0f);
+
+        posiciones[x, y] = gp;
     }
 
-    void LlenarMatriz()
+    public void LlenarMatriz()
     {
-        for(int i = 0; i < altura; i++)
+        for(int x = 0; x < ancho; x++)
         {
-            for (int j = 0; j < ancho; j++)
+            for (int y = 0; y < altura; y++)
             {
                 GameObject go = PiezaAleatoria();
-                PiezaPosicion(go.GetComponent<GamePiece>(), j, i);
+                PiezaPosicion(go.GetComponent<GamePiece>(), x, y);
             }
         }
     }
@@ -101,13 +105,24 @@ public class Board : MonoBehaviour
         }
 
     }
-    public void Realice(Tile rota)
+    public void Realice()
     {
         if(inicial != null && final != null)
         {
-            inicial = null;
-            final = null;
+            CambioDeFichas(inicial, final);
         }
+    }
+
+    public void CambioDeFichas(Tile inicioT, Tile finalT)
+    {
+        GamePiece gPin = posiciones[inicioT.indiceX, inicioT.indiceY];
+        GamePiece gFin = posiciones[finalT.indiceX, finalT.indiceY];
+
+        gPin.MoverPieza(finalT.indiceX, finalT.indiceY, gPin.tiempoMovimiento);
+        gFin.MoverPieza(inicioT.indiceX, inicioT.indiceY, gFin.tiempoMovimiento);
+
+        inicial = null;
+        final = null;
     }
 
 }

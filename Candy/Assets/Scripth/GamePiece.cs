@@ -13,7 +13,7 @@ public class GamePiece : MonoBehaviour
 
     public TipoInterpolacion tipoInterpolacion;
 
-    void MoverPieza(int x, int y, float timeMovement)
+    public void MoverPieza(int x, int y, float timeMovement)
     {
         if(seEjecuto == true)
         {

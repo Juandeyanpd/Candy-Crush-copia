@@ -27,6 +27,6 @@ public class Tile : MonoBehaviour
 
     private void OnMouseUp()
     {
-        board.Realice(this);
+        board.Realice();
     }
 }
