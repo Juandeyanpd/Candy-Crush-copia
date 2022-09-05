@@ -16,7 +16,9 @@ public class Board : MonoBehaviour
 
     public Tile inicial;
     public Tile final;
+    GamePiece game;
 
+    bool esVecino;
 
     private void Start()
     {
@@ -65,13 +67,16 @@ public class Board : MonoBehaviour
         int indexAleatorio = Random.Range(0, prefab_Pieces.Length);
         GameObject go = Instantiate(prefab_Pieces[indexAleatorio]);
 
+        GamePiece gamePiece = go.GetComponent<GamePiece>();
+        gamePiece.board = this;
+
         return go;
     }
 
     public void PiezaPosicion(GamePiece gp, int x, int y)
     {
         gp.transform.position = new Vector3(x, y, 0f);
-
+        gp.Cordenada(x, y);
         posiciones[x, y] = gp;
     }
 
@@ -86,7 +91,6 @@ public class Board : MonoBehaviour
             }
         }
     }
-
 
     public void InicioMouse(Tile ini)
     {
@@ -109,7 +113,10 @@ public class Board : MonoBehaviour
     {
         if(inicial != null && final != null)
         {
-            CambioDeFichas(inicial, final);
+            if (EsVecino(inicial, final))
+            {
+                CambioDeFichas(inicial, final);
+            }
         }
     }
 
@@ -123,6 +130,34 @@ public class Board : MonoBehaviour
 
         inicial = null;
         final = null;
+    }
+
+    bool EsVecino(Tile _inicial, Tile _final)
+    {
+        bool x = true;
+        int lineaXP = _inicial.indiceX + 1;
+        int lineaXN = _inicial.indiceX - 1;
+        int lineaYP = _final.indiceY + 1;
+        int lineaYN = _final.indiceY - 1;
+
+        if (!x)
+        {
+
+            if(_final.indiceX == lineaXP || _final.indiceX == lineaXN)
+            {
+                x = false;
+                return true;
+            }
+           
+        }
+        else
+        {
+            if (_final.indiceY == lineaYP || _final.indiceY == lineaYN)
+            {
+
+            }
+        }
+            return false;
     }
 
 }

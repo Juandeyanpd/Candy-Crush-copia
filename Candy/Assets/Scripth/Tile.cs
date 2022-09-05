@@ -8,6 +8,7 @@ public class Tile : MonoBehaviour
     public int indiceY;
 
     public Board board;
+    public GamePiece gamePiece;
 
     public void Intial(int cambioX, int cambioY)
     {

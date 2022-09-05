@@ -13,6 +13,8 @@ public class GamePiece : MonoBehaviour
 
     public TipoInterpolacion tipoInterpolacion;
 
+    public Board board;
+
     public void MoverPieza(int x, int y, float timeMovement)
     {
         if(seEjecuto == true)
@@ -35,6 +37,7 @@ public class GamePiece : MonoBehaviour
                 llegoAlPunto = true;
                 seEjecuto = true;
                 transform.position = new Vector3((int)posicionFinal.x, (int)posicionFinal.y);
+                board.PiezaPosicion(this, (int)posicionFinal.x, (int)posicionFinal.y);
             }
 
             float t = tiempoTranscurrido / tiempoMovimiento;
