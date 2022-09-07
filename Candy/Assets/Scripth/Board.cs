@@ -24,6 +24,7 @@ public class Board : MonoBehaviour
         OrganizarCam();
         CrearBoard();
         LlenarMatriz();
+        ResaltarCoincidencias();
     }
 
     void CrearBoard() 
@@ -204,8 +205,8 @@ public class Board : MonoBehaviour
     
     List<GamePiece> BusquedaVertical(int startX, int startY, int CantidadMinima = 3)
     {
-        List<GamePiece> arriba = EncontrarCoincidencias(startX, startY, Vector2.up, 2);
-        List<GamePiece> abajo = EncontrarCoincidencias(startX, startY, Vector2.down, 2);
+        List<GamePiece> arriba = EncontrarCoincidencias(startX, startY, Vector2.up, 3);
+        List<GamePiece> abajo = EncontrarCoincidencias(startX, startY, Vector2.down, 3);
 
         if (arriba == null)
         {
@@ -224,8 +225,8 @@ public class Board : MonoBehaviour
 
     List<GamePiece> BusquedaHorizontal(int startX, int startY, int CantidadMinima = 3)
     {
-        List<GamePiece> derecha = EncontrarCoincidencias(startX, startY, Vector2.right, 2);
-        List<GamePiece> izquierda = EncontrarCoincidencias(startX, startY, Vector2.left, 2);
+        List<GamePiece> derecha = EncontrarCoincidencias(startX, startY, Vector2.right, 3);
+        List<GamePiece> izquierda = EncontrarCoincidencias(startX, startY, Vector2.left, 3);
 
         if (derecha == null)
         {
@@ -242,8 +243,8 @@ public class Board : MonoBehaviour
         return listasCombinadas.Count >= CantidadMinima ? listasCombinadas : null;
     }
 
-    public void ResaltarCoincidencias()
+    public void ResaltarCoincidencias(Vector2 direccionDeBusqueda,int x, int y)
     {
-
+        //EncontrarCoincidencias(x, y, Vector2 direccionDeBusqueda, )
     }
 }
