@@ -26,10 +26,12 @@ public class GamePiece : MonoBehaviour
 
     IEnumerator Corrutine(Vector3 posicionFinal, float timeMovement)
     {
-        bool llegoAlPunto = false;
         seEjecuto = false;
-        Vector3 posicionInicial = transform.position;
+
+        bool llegoAlPunto = false;
         float tiempoTranscurrido = 0;
+
+        Vector3 posicionInicial = transform.position;
 
         while(!llegoAlPunto)
         {
@@ -37,8 +39,11 @@ public class GamePiece : MonoBehaviour
             {
                 llegoAlPunto = true;
                 seEjecuto = true;
-                transform.position = new Vector3((int)posicionFinal.x, (int)posicionFinal.y);
+
                 board.PiezaPosicion(this, (int)posicionFinal.x, (int)posicionFinal.y);
+
+                transform.position = new Vector3((int)posicionFinal.x, (int)posicionFinal.y, 0);
+                break;
             }
 
             float t = tiempoTranscurrido / tiempoMovimiento;

@@ -28,6 +28,6 @@ public class Tile : MonoBehaviour
 
     private void OnMouseUp()
     {
-        board.Realice();
+        board.Realice(this);
     }
 }
