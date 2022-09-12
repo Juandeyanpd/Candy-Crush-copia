@@ -17,6 +17,9 @@ public class Board : MonoBehaviour
     public Tile inicial;
     public Tile final;
 
+    [Range(0.1f, .5f)]
+    public float swapTime = .3f;
+
     private void Start()
     {
         OrganizarCam();
@@ -89,6 +92,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    void LlenarMatrizAleatoriaEn()
+    {
+
+    }
+
 
     public void InicioMouse(Tile ini)
     {
@@ -120,15 +128,36 @@ public class Board : MonoBehaviour
 
     public void CambioDeFichas(Tile inicioT, Tile finalT)
     {
+        StartCoroutine(Cambio(inicioT, finalT));
+    }
+
+    IEnumerator Cambio(Tile inicioT, Tile finalT)
+    {
         GamePiece gPin = posiciones[inicioT.indiceX, inicioT.indiceY];
         GamePiece gFin = posiciones[finalT.indiceX, finalT.indiceY];
 
-        gPin.MoverPieza(finalT.indiceX, finalT.indiceY, .5f);
-        gFin.MoverPieza(inicioT.indiceX, inicioT.indiceY, .5f);
+        if (gFin != null && gFin != null)
+        {
+            gPin.MoverPieza(finalT.indiceX, finalT.indiceY, swapTime);
+            gFin.MoverPieza(inicioT.indiceX, inicioT.indiceY, swapTime);
 
-        ResaltarCoincidenciasEn(gPin.cordenadaX, gPin.cordenadaY);
-        ResaltarCoincidenciasEn(gFin.cordenadaX, gFin.cordenadaY);
+            yield return new WaitForSeconds(swapTime);
 
+            List<GamePiece> listasCombinadasInicio = EncontrarCoincidenciasEn(inicioT.indiceX, inicioT.indiceY);
+            List<GamePiece> listasCombinadasFinal = EncontrarCoincidenciasEn(finalT.indiceX, finalT.indiceY);
+
+            if (listasCombinadasInicio.Count == 0 && listasCombinadasFinal.Count == 0)
+            {
+                gPin.MoverPieza(inicioT.indiceX, inicioT.indiceY, swapTime);
+                gFin.MoverPieza(finalT.indiceX, finalT.indiceY, swapTime);
+            }
+
+            /*ResaltarCoincidenciasEn(gPin.cordenadaX, gPin.cordenadaY);
+            ResaltarCoincidenciasEn(gFin.cordenadaX, gFin.cordenadaY);*/
+
+            ClearPieces(listasCombinadasInicio);
+            ClearPieces(listasCombinadasFinal);
+        }
 
     }
 
@@ -191,15 +220,23 @@ public class Board : MonoBehaviour
 
             GamePiece siguientePieza = posiciones[siguienteX, siguienteY];
 
-            //Comparar si las piezas inicial y final son del mismo tipo
-            if (piezaIncial.tipoFicha == siguientePieza.tipoFicha && !coincidencias.Contains(siguientePieza))
-            {
-                coincidencias.Add(siguientePieza);
-            }
-            else
+            if (siguientePieza == null)
             {
                 break;
             }
+            else
+            {
+                //Comparar si las piezas inicial y final son del mismo tipo
+                if (piezaIncial.tipoFicha == siguientePieza.tipoFicha && !coincidencias.Contains(siguientePieza))
+                {
+                    coincidencias.Add(siguientePieza);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
         }
 
         if (coincidencias.Count >= cantidadMinima)
@@ -271,6 +308,22 @@ public class Board : MonoBehaviour
         return listasCombinadas;
     }
 
+    private List<GamePiece> EncontrarTodasLasCoincidencias()
+    {
+        List<GamePiece> todasLasCoincidencias = new List<GamePiece>();
+
+        for (int i = 0; i < ancho; i++)
+        {
+            for (int j = 0; j < altura; j++)
+            {
+                var coincidencias = EncontrarCoincidenciasEn(i, j);
+                todasLasCoincidencias = todasLasCoincidencias.Union(coincidencias).ToList();
+            }
+        }
+
+        return todasLasCoincidencias;
+    }
+
     public void ResaltarCoincidencias()
     {
         for (int i = 0; i < ancho; i++)
@@ -299,5 +352,35 @@ public class Board : MonoBehaviour
     {
         SpriteRenderer sr = board[_x, _y].GetComponent<SpriteRenderer>();
         sr.color = _col;
+    }
+
+
+
+    private void ClearBoard()
+    {
+        for (int _x = 0; _x < ancho; _x++)
+        {
+            for (int _y = 0; _y < altura; _y++)
+            {
+                ClearPieceAt(_y, _y);
+            }
+        }
+    }
+
+    private void ClearPieceAt(int x, int y)
+    {
+        GamePiece pieceToClear = posiciones[x, y];
+        if(pieceToClear != null)
+        {
+            posiciones[x, y] = null;
+            Destroy(pieceToClear.gameObject);
+        }
+    }
+    private void ClearPieces(List<GamePiece> gamePieces)
+    {
+        foreach(GamePiece gamePiece in gamePieces)
+        {
+            ClearPieceAt(gamePiece.cordenadaX, gamePiece.cordenadaY);
+        }
     }
 }

@@ -7,7 +7,6 @@ public class GamePiece : MonoBehaviour
     public int cordenadaX;
     public int cordenadaY;
 
-    public float tiempoMovimiento;
     bool seEjecuto = true;
     public AnimationCurve curve;
 
@@ -46,7 +45,7 @@ public class GamePiece : MonoBehaviour
                 break;
             }
 
-            float t = tiempoTranscurrido / tiempoMovimiento;
+            float t = tiempoTranscurrido / timeMovement;
 
             switch(tipoInterpolacion)
             {
