@@ -86,15 +86,50 @@ public class Board : MonoBehaviour
         {
             for (int y = 0; y < altura; y++)
             {
-                GameObject go = PiezaAleatoria();
-                PiezaPosicion(go.GetComponent<GamePiece>(), x, y);
+                LlenarMatrizAleatoriaEn(x, y);
             }
+        }
+
+        bool estaLlena = false;
+        int interracion = 0;
+        int interracionMaximas = 100;
+
+        while(!estaLlena)
+        {
+            List<GamePiece> coincidencias = EncontrarTodasLasCoincidencias();
+
+            if(coincidencias.Count == 0)
+            {
+                estaLlena = true;
+                break;
+            }
+            else
+            {
+                ReemplazarConPiezaAleatoria(coincidencias);
+            }
+
+            if(interracion > interracionMaximas)
+            {
+                estaLlena = true;
+                Debug.LogWarning("Se alcanzo el número máximo de interraciones");
+            }
+            interracion++;
         }
     }
 
-    void LlenarMatrizAleatoriaEn()
+    void LlenarMatrizAleatoriaEn(int x, int y)
     {
+        GameObject go = PiezaAleatoria();
+        PiezaPosicion(go.GetComponent<GamePiece>(), x, y);
+    }
 
+    private void ReemplazarConPiezaAleatoria(List<GamePiece> coincidencias)
+    {
+        foreach (GamePiece gamePieces in coincidencias)
+        {
+            ClearPieceAt(gamePieces.cordenadaX, gamePieces.cordenadaY);
+            LlenarMatrizAleatoriaEn(gamePieces.cordenadaX, gamePieces.cordenadaY);
+        }
     }
 
 
@@ -157,6 +192,9 @@ public class Board : MonoBehaviour
 
             ClearPieces(listasCombinadasInicio);
             ClearPieces(listasCombinadasFinal);
+
+            CollapseColumn(listasCombinadasInicio);
+            CollapseColumn(listasCombinadasFinal);
         }
 
     }
@@ -353,7 +391,7 @@ public class Board : MonoBehaviour
         SpriteRenderer sr = board[_x, _y].GetComponent<SpriteRenderer>();
         sr.color = _col;
     }
-
+        
 
 
     private void ClearBoard()
@@ -382,5 +420,57 @@ public class Board : MonoBehaviour
         {
             ClearPieceAt(gamePiece.cordenadaX, gamePiece.cordenadaY);
         }
+    }
+
+    List<GamePiece> CollapseColumn(int column, float CollapseTime = 0.1f)
+    {
+        List<GamePiece> movingPieces = new List<GamePiece>();
+
+        for (int i = 0; i < altura-1; i++)
+        {
+            if (posiciones[column, i] == null)
+            {
+                for (int j = i + 1; j < altura; j++)
+                {
+                    if (posiciones[column, j] != null)
+                    {
+                        posiciones[column, j].MoverPieza(column, i, CollapseTime);
+                        posiciones[column, i] = posiciones[column, j];
+                        posiciones[column, i].Cordenada(column, i);
+                        if (!movingPieces.Contains(posiciones[column, i]))
+                        {
+                            movingPieces.Add(posiciones[column, i]);
+                        }
+                        posiciones[column, j] = null;
+                        break;
+                    }
+                }
+            }
+        }
+        return movingPieces;
+    }
+
+    List<GamePiece> CollapseColumn(List<GamePiece> gamePieces)
+    {
+        List<GamePiece> movingPieces = new List<GamePiece>();
+        List<int> collumnsToCollapse = GetColumns(gamePieces);
+        foreach (int column in collumnsToCollapse)
+        {
+            movingPieces = movingPieces.Union(CollapseColumn(column)).ToList();
+        }
+        return movingPieces;
+    }
+
+    List<int> GetColumns(List<GamePiece> gamePieces)
+    {
+        List<int> collumnsIndex = new List<int>();
+        foreach (GamePiece gamePiece in gamePieces)
+        {
+            if (!collumnsIndex.Contains(gamePiece.cordenadaX))
+            {
+                collumnsIndex.Add(gamePiece.cordenadaX);
+            }
+        }
+        return collumnsIndex;
     }
 }
