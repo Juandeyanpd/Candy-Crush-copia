@@ -186,15 +186,11 @@ public class Board : MonoBehaviour
                 gPin.MoverPieza(inicioT.indiceX, inicioT.indiceY, swapTime);
                 gFin.MoverPieza(finalT.indiceX, finalT.indiceY, swapTime);
             }
-
-            /*ResaltarCoincidenciasEn(gPin.cordenadaX, gPin.cordenadaY);
-            ResaltarCoincidenciasEn(gFin.cordenadaX, gFin.cordenadaY);*/
-
-            ClearPieces(listasCombinadasInicio);
-            ClearPieces(listasCombinadasFinal);
-
-            CollapseColumn(listasCombinadasInicio);
-            CollapseColumn(listasCombinadasFinal);
+            else
+            {
+                listasCombinadasInicio = listasCombinadasInicio.Union(listasCombinadasFinal).ToList();
+                ClearAndRefillBoard(listasCombinadasInicio);
+            }
         }
 
     }
@@ -346,6 +342,17 @@ public class Board : MonoBehaviour
         return listasCombinadas;
     }
 
+    private List<GamePiece> EncontrarCoincidenciasEn(List<GamePiece> gamePieces, int cantidadMinima = 3)
+    {
+        List<GamePiece> matches = new List<GamePiece>();
+
+        foreach (GamePiece gamePiece in gamePieces)
+        {
+            matches = matches.Union(EncontrarCoincidenciasEn(gamePiece.cordenadaX, gamePiece.cordenadaY)).ToList();
+        }
+        return matches;
+    }
+
     private List<GamePiece> EncontrarTodasLasCoincidencias()
     {
         List<GamePiece> todasLasCoincidencias = new List<GamePiece>();
@@ -414,11 +421,14 @@ public class Board : MonoBehaviour
             Destroy(pieceToClear.gameObject);
         }
     }
-    private void ClearPieces(List<GamePiece> gamePieces)
+    private void ClearPieceAt(List<GamePiece> gamePieces)
     {
         foreach(GamePiece gamePiece in gamePieces)
         {
-            ClearPieceAt(gamePiece.cordenadaX, gamePiece.cordenadaY);
+            if (gamePiece != null)
+            {
+                ClearPieceAt(gamePiece.cordenadaX, gamePiece.cordenadaY);
+            }
         }
     }
 
@@ -472,5 +482,49 @@ public class Board : MonoBehaviour
             }
         }
         return collumnsIndex;
+    }
+
+    void ClearAndRefillBoard(List<GamePiece> gamePieces)
+    {
+        StartCoroutine(ClearAndRefillBoardRoutine(gamePieces));
+    }
+
+    IEnumerator ClearAndRefillBoardRoutine(List<GamePiece> gamePieces)
+    {
+        yield return StartCoroutine(ClearAndCollapseColumn(gamePieces)); 
+        yield return null;
+        yield return StartCoroutine(RefillRoutine());
+    }
+
+    IEnumerator ClearAndCollapseColumn(List<GamePiece> gamePieces)
+    {
+        List<GamePiece> movingPieces = new List<GamePiece>();
+        List<GamePiece> matches = new List<GamePiece>();
+
+        bool isFinished = false;
+
+        while(!isFinished)
+        {
+            ClearPieceAt(gamePieces);
+            yield return new WaitForSeconds(.5f);
+            movingPieces = CollapseColumn(gamePieces);
+            yield return new WaitForSeconds(.5f);
+            matches = EncontrarCoincidenciasEn(movingPieces);
+
+            if (matches.Count == 0)
+            {
+                isFinished = true;
+                break;
+            }
+            else
+            {
+                yield return StartCoroutine(ClearAndCollapseColumn(matches));
+            }
+        }
+    }
+
+    IEnumerator RefillRoutine()
+    {
+        yield return null;
     }
 }
