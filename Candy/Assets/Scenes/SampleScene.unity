@@ -228,8 +228,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
-  altura: 1000
-  ancho: 1000
+  altura: 7
+  ancho: 7
   cam: {fileID: 519420031}
   borde: 1
   prefab_Pieces:
@@ -244,6 +244,7 @@ MonoBehaviour:
   inicial: {fileID: 0}
   final: {fileID: 0}
   swapTime: 0.3
+  puedeMover: 1
 --- !u!4 &723624296
 Transform:
   m_ObjectHideFlags: 0
