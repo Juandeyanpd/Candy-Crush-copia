@@ -90,14 +90,14 @@ public class GamePiece : MonoBehaviour
 
     public enum TipoFicha
     {
-        Naranja,
-        Verde,
-        Azul,
-        Morado,
-        Rosado,
-        Amarillo,
-        Rojo,
-        Blanco
+        galleta,
+        chocolate,
+        helado,
+        algodondeazucar,
+        dulce,
+        ponque,
+        candy,
+        barradechocolate
     }
 
     /*private void Update()
