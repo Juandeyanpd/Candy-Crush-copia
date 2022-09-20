@@ -22,8 +22,14 @@ public class Board : MonoBehaviour
 
     public bool puedeMover = true;
 
+    public AudioClip clip;
+
+    public Score score;
+
     private void Start()
     {
+        //Se llaman los métodos desde que comienza el play y inicializa
+        
         posiciones = new GamePiece[ancho, altura];
         OrganizarCam();
         CrearBoard();
@@ -32,6 +38,7 @@ public class Board : MonoBehaviour
 
     void CrearBoard()
     {
+        //Se instancia el tablero de juego, o sea los "Tiles"
         board = new Tile[ancho, altura];
 
         for (int x = 0; x < ancho; x++) //i para x
@@ -54,6 +61,7 @@ public class Board : MonoBehaviour
 
     void OrganizarCam()
     {
+        //Aquí organizamos la cámara para que quepa todo el tablero 
         cam.transform.position = new Vector3(((float)ancho / 2) - .5f, ((float)altura / 2) - .5f, -10);
 
         float aspectRatio = (float)Screen.width / (float)Screen.height;
@@ -66,6 +74,7 @@ public class Board : MonoBehaviour
 
     GameObject PiezaAleatoria()
     {
+        //Aquí instanciamos una pieza de juego aleatoria
         int indexAleatorio = Random.Range(0, prefab_Pieces.Length);
         GameObject go = Instantiate(prefab_Pieces[indexAleatorio]);
 
@@ -200,6 +209,8 @@ public class Board : MonoBehaviour
             {
                 listasCombinadasInicio = listasCombinadasInicio.Union(listasCombinadasFinal).ToList();
                 ClearAndRefillBoard(listasCombinadasInicio);
+                Sonido();
+                score.Puntaje(100);
             }
         }
 
@@ -560,6 +571,6 @@ public class Board : MonoBehaviour
 
     void Sonido()
     {
-
+        AudioSource.PlayClipAtPoint(clip, gameObject.transform.position);
     }
 }
