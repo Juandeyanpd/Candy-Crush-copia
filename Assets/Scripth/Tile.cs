@@ -7,27 +7,27 @@ public class Tile : MonoBehaviour
     public int indiceX;
     public int indiceY;
 
-    public Board board;
-    public GamePiece gamePiece;
+    public Board m_Board;
 
-    public void Intial(int cambioX, int cambioY)
+    public void Intial(int x, int y, Board board)
     {
-        indiceX = cambioX;
-        indiceY = cambioY;
+        indiceX = x;
+        indiceY = y;
+        m_Board = board;
     }
 
     private void OnMouseDown()
     {
-        board.InicioMouse(this);
+        m_Board.ClickedTile(this);
     }
 
     private void OnMouseEnter()
     {
-        board.EndMouse(this);
+        m_Board.DragToTile(this);
     }
 
     private void OnMouseUp()
     {
-        board.Realice(this);
+        m_Board.ReleaseTile(this);
     }
 }

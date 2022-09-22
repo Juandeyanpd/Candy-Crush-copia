@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,90 +6,93 @@ using UnityEngine;
 
 public class GamePiece : MonoBehaviour
 {
-    public int cordenadaX;
-    public int cordenadaY;
+    public int coordinateX;
+    public int coordinateY;
 
-    bool seEjecuto = true;
+    public Board m_Board;
+
+    bool m_isMoving = false;
     public AnimationCurve curve;
 
-    public TipoInterpolacion tipoInterpolacion;
-    public TipoFicha tipoFicha;
+    public InterpType interpolation;
+    public MatchValue matchValue;
 
-    public Board board;
-
-    public void MoverPieza(int x, int y, float timeMovement)
+    public void SetCoord(int x, int y)
     {
-        if(seEjecuto == true)
+        coordinateX = x;
+        coordinateY = y;
+    }
+
+    private void Init(Board board)
+    {
+        m_Board = board;
+    }
+
+    public void Move(int x, int y, float moveTime)
+    {
+        if(!m_isMoving)
         {
-            StartCoroutine(Corrutine(new Vector3(x,y,0), timeMovement));
+            StartCoroutine(MoveRoutine(x, y, moveTime));
         }
     }
 
-    IEnumerator Corrutine(Vector3 posicionFinal, float timeMovement)
+    IEnumerator MoveRoutine(int destX, int destY, float timeToMove)
     {
-        seEjecuto = false;
+        Vector2 startPosition = transform.position;
+        bool reacedDestination = false;
+        float elapsedTime = 0f;
+        m_isMoving = true;
 
-        bool llegoAlPunto = false;
-        float tiempoTranscurrido = 0;
-
-        Vector3 posicionInicial = transform.position;
-
-        while(!llegoAlPunto)
+        while(!reacedDestination)
         {
-            if (Vector3.Distance(transform.position, posicionFinal) < 0.01f)
+            if (Vector2.Distance(transform.position, new Vector2 (destX, destY)) < 0.01f)
             {
-                llegoAlPunto = true;
-                seEjecuto = true;
-
-                board.PiezaPosicion(this, (int)posicionFinal.x, (int)posicionFinal.y);
-
-                transform.position = new Vector3((int)posicionFinal.x, (int)posicionFinal.y, 0);
+                reacedDestination = true;
+                if(m_Board != null)
+                {
+                    m_Board.PiezaPosicion(this, destX, destY);
+                }
                 break;
             }
 
-            float t = tiempoTranscurrido / timeMovement;
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp(elapsedTime / timeToMove, 0f, 1f);
 
-            switch(tipoInterpolacion)
+            switch(interpolation)
             {
-                case TipoInterpolacion.Lineal:
-                    t = curve.Evaluate(t);
-                break;
+                case InterpType.Linear:
 
-                case TipoInterpolacion.Entrada:
+                break;
+                case InterpType.EaseIn:
                     t = 1 - Mathf.Cos(t * Mathf.PI * .5f);
-                break;
-
-                case TipoInterpolacion.Salida:
+                    break;
+                case InterpType.EaseOut:
                     t = Mathf.Sin(t * Mathf.PI * .5f);
-                break;
-
-                case TipoInterpolacion.Suavizado:
+                    break;
+                case InterpType.SmoothSetp:
                     t = t * t * (3 - 2);
-                break;
-
-                case TipoInterpolacion.MasSuavizado:
+                    break;
+                case InterpType.SmootherStep:
                     t = t * t *t * (t * (t * 6 - 15) + 10);
                 break;
-
             }
 
-            transform.position = Vector3.Lerp(posicionInicial, posicionFinal, t);
-            tiempoTranscurrido += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            transform.position = Vector2.Lerp(startPosition, new Vector2 (destX,destY), t);
+            yield return null;
         }
-        
+        m_isMoving = false;
     }
 
-    public enum TipoInterpolacion
+    public enum InterpType
     {
-        Lineal,
-        Entrada, 
-        Salida,
-        Suavizado,
-        MasSuavizado
+        Linear,
+        EaseIn, 
+        EaseOut,
+        SmoothSetp,
+        SmootherStep
     }
 
-    public enum TipoFicha
+    public enum MatchValue
     {
         galleta,
         chocolate,
@@ -98,35 +102,5 @@ public class GamePiece : MonoBehaviour
         ponque,
         candy,
         barradechocolate
-    }
-
-    /*private void Update()
-    {
-
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            MoverPieza(new Vector3(transform.position.x, transform.position.y + 1, 0), tiempoMovimiento);
-        }
-
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            MoverPieza(new Vector3(transform.position.x, transform.position.y - 1, 0), tiempoMovimiento);
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            MoverPieza(new Vector3(transform.position.x - 1, transform.position.y, 0), tiempoMovimiento);
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            MoverPieza(new Vector3(transform.position.x + 1, transform.position.y, 0), tiempoMovimiento);
-        }
-    }*/
-
-    public void Cordenada(int x, int y)
-    {
-        cordenadaX = x;
-        cordenadaY = y;
     }
 }

@@ -1,74 +1,98 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    Tile[,] board;
-    public GameObject prefab;
-    public int altura;
-    public int ancho;
-    public Camera cam;
-    public int borde;
-    public GameObject[] prefab_Pieces;
-    public GamePiece[,] posiciones;
+    public int width;
+    public int heigth;
 
-    public Tile inicial;
-    public Tile final;
+    public int borderSize;
+
+    public GameObject tilePrefab;
+    public GameObject[] gamePiecesPrefabs;
 
     [Range(0.1f, .5f)]
     public float swapTime = .3f;
 
-    public bool puedeMover = true;
+    Tile[,] m_allTiles;
+    GamePiece[,] m_allGamePieces;
+
+    [SerializeField] Tile m_clickedTile;
+    [SerializeField] Tile m_targetTile;
+
+    bool m_playerInputEnabled = true;
+
+    Transform tileParent;
+    Transform gamePieceParent;
 
     public AudioClip clip;
-
-    public Score score;
+    public Canva score;
 
     private void Start()
     {
         //Se llaman los métodos desde que comienza el play y inicializa
-        
-        posiciones = new GamePiece[ancho, altura];
-        OrganizarCam();
-        CrearBoard();
-        LlenarMatriz();
+
+        SetParents();
+
+        m_allTiles = new Tile[width, heigth];
+        m_allGamePieces = new GamePiece[width, heigth];
+
+        SetupTiles();
+        SetupCamera();
+        FillBoard(10, .5f);
     }
 
-    void CrearBoard()
+    private void SetParents()
+    {
+        if(tileParent == null)
+        {
+            tileParent = new GameObject().transform;
+            tileParent.name = "Tiles";
+            tileParent.parent = this.transform;
+        }
+
+        if(gamePieceParent == null)
+        {
+            gamePieceParent = new GameObject().transform;
+            gamePieceParent.name = "GamePieces";
+            gamePieceParent = this.transform;
+        }
+    }
+
+    void SetupTiles()
     {
         //Se instancia el tablero de juego, o sea los "Tiles"
-        board = new Tile[ancho, altura];
 
-        for (int x = 0; x < ancho; x++) //i para x
+        for (int x = 0; x < width; x++) //i para x
         {
-            for (int y = 0; y < altura; y++) //j para y
+            for (int y = 0; y < heigth; y++) //j para y
             {
-                GameObject go = Instantiate(prefab);
+                GameObject go = Instantiate(tilePrefab);
                 go.name = "Tile : ( " + x + " , " + y + " ) ";
                 go.transform.position = new Vector2(x, y);
                 go.transform.parent = transform;
                 Tile tile = go.GetComponent<Tile>();
-                tile.board = this;
-                board[x, y] = tile;
+                tile.m_Board = this;
+                m_allTiles[x, y] = tile;
                 //board[ancho, altura]
                 //board[x, y]
-                tile.Intial(x, y);
+                tile.Intial(x, y, this);
             }
         }
     }
 
-    void OrganizarCam()
+    void SetupCamera()
     {
         //Aquí organizamos la cámara para que quepa todo el tablero 
-        cam.transform.position = new Vector3(((float)ancho / 2) - .5f, ((float)altura / 2) - .5f, -10);
+        cam.transform.position = new Vector3(((float)width / 2) - .5f, ((float)heigth / 2) - .5f, -10);
 
         float aspectRatio = (float)Screen.width / (float)Screen.height;
 
-        float sizeY = cam.orthographicSize = ((float)altura / 2) + borde;
-        float sizeX = cam.orthographicSize = (((float)ancho / 2) + borde) / (aspectRatio);
+        float sizeY = cam.orthographicSize = ((float)heigth / 2) + borderSize;
+        float sizeX = cam.orthographicSize = (((float)width / 2) + borderSize) / (aspectRatio);
 
         cam.orthographicSize = sizeY > sizeX ? sizeY : sizeX;
     }
@@ -76,11 +100,11 @@ public class Board : MonoBehaviour
     GameObject PiezaAleatoria()
     {
         //Aquí instanciamos una pieza de juego aleatoria
-        int indexAleatorio = Random.Range(0, prefab_Pieces.Length);
-        GameObject go = Instantiate(prefab_Pieces[indexAleatorio]);
+        int indexAleatorio = Random.Range(0, gamePiecesPrefabs.Length);
+        GameObject go = Instantiate(gamePiecesPrefabs[indexAleatorio]);
 
         GamePiece gamePiece = go.GetComponent<GamePiece>();
-        gamePiece.board = this;
+        gamePiece.m_Board = this;
 
         return go;
     }
@@ -88,19 +112,19 @@ public class Board : MonoBehaviour
     public void PiezaPosicion(GamePiece gp, int x, int y)
     {
         gp.transform.position = new Vector3(x, y, 0f);
-        gp.Cordenada(x, y);
-        posiciones[x, y] = gp;
+        gp.SetCoord(x, y);
+        m_allGamePieces[x, y] = gp;
     }
 
-    public void LlenarMatriz()
+    public void FillBoard(int falseOffSet = 0, float moveTime = .1f)
     {
         List<GamePiece> addedPieces = new List<GamePiece>();
 
-        for (int x = 0; x < ancho; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < altura; y++)
+            for (int y = 0; y < heigth; y++)
             {
-                if (posiciones[x,y] == null)
+                if (m_allGamePieces[x,y] == null)
                 {
                     GamePiece gamePiece = LlenarMatrizAleatoriaEn(x, y);
                     addedPieces.Add(gamePiece);
@@ -147,37 +171,37 @@ public class Board : MonoBehaviour
     {
         foreach (GamePiece gamePieces in coincidencias)
         {
-            ClearPieceAt(gamePieces.cordenadaX, gamePieces.cordenadaY);
-            LlenarMatrizAleatoriaEn(gamePieces.cordenadaX, gamePieces.cordenadaY);
+            ClearPieceAt(gamePieces.coordinateX, gamePieces.coordinateY);
+            LlenarMatrizAleatoriaEn(gamePieces.coordinateX, gamePieces.coordinateY);
         }
     }
 
 
-    public void InicioMouse(Tile ini)
+    public void ClickedTile(Tile ini)
     {
 
-        if (inicial == null)
+        if (m_clickedTile == null)
         {
-            inicial = ini;
+            m_clickedTile = ini;
         }
 
     }
-    public void EndMouse(Tile fin)
+    public void DragToTile(Tile fin)
     {
-        if (inicial != null && EsVecino(inicial, fin))
+        if (m_clickedTile != null && EsVecino(m_clickedTile, fin))
         {
-            final = fin;
+            m_targetTile = fin;
         }
 
     }
-    public void Realice(Tile release)
+    public void ReleaseTile(Tile release)
     {
-        if (inicial != null && final != null)
+        if (m_clickedTile != null && m_targetTile != null)
         {
-            CambioDeFichas(inicial, final);
+            CambioDeFichas(m_clickedTile, m_targetTile);
         }
-        inicial = null;
-        final = null;
+        m_clickedTile = null;
+        m_targetTile = null;
     }
 
 
@@ -188,13 +212,13 @@ public class Board : MonoBehaviour
 
     IEnumerator Cambio(Tile inicioT, Tile finalT)
     {
-        GamePiece gPin = posiciones[inicioT.indiceX, inicioT.indiceY];
-        GamePiece gFin = posiciones[finalT.indiceX, finalT.indiceY];
+        GamePiece gPin = m_allGamePieces[inicioT.indiceX, inicioT.indiceY];
+        GamePiece gFin = m_allGamePieces[finalT.indiceX, finalT.indiceY];
 
         if (gFin != null && gFin != null)
         {
-            gPin.MoverPieza(finalT.indiceX, finalT.indiceY, swapTime);
-            gFin.MoverPieza(inicioT.indiceX, inicioT.indiceY, swapTime);
+            gPin.Move(finalT.indiceX, finalT.indiceY, swapTime);
+            gFin.Move(inicioT.indiceX, inicioT.indiceY, swapTime);
 
             yield return new WaitForSeconds(swapTime);
 
@@ -203,8 +227,8 @@ public class Board : MonoBehaviour
 
             if (listasCombinadasInicio.Count == 0 && listasCombinadasFinal.Count == 0)
             {
-                gPin.MoverPieza(inicioT.indiceX, inicioT.indiceY, swapTime);
-                gFin.MoverPieza(finalT.indiceX, finalT.indiceY, swapTime);
+                gPin.Move(inicioT.indiceX, inicioT.indiceY, swapTime);
+                gFin.Move(finalT.indiceX, finalT.indiceY, swapTime);
             }
             else
             {
@@ -233,7 +257,7 @@ public class Board : MonoBehaviour
 
     bool EstaEnRango(int _x, int _y)
     {
-        return (_x < ancho && _x >= 0 && _y >= 0 && _y < altura);
+        return (_x < width && _x >= 0 && _y >= 0 && _y < heigth);
     }
 
 
@@ -247,7 +271,7 @@ public class Board : MonoBehaviour
 
         if (EstaEnRango(startX, startY))
         {
-            piezaIncial = posiciones[startX, startY];
+            piezaIncial = m_allGamePieces[startX, startY];
         }
 
         if (piezaIncial != null)
@@ -262,7 +286,7 @@ public class Board : MonoBehaviour
         int siguienteX;
         int siguienteY;
 
-        int valorMaximo = ancho > altura ? ancho : altura;
+        int valorMaximo = width > heigth ? width : heigth;
 
         for (int i = 1; i < valorMaximo - 1; i++)
         {
@@ -274,7 +298,7 @@ public class Board : MonoBehaviour
                 break;
             }
 
-            GamePiece siguientePieza = posiciones[siguienteX, siguienteY];
+            GamePiece siguientePieza = m_allGamePieces[siguienteX, siguienteY];
 
             if (siguientePieza == null)
             {
@@ -283,7 +307,7 @@ public class Board : MonoBehaviour
             else
             {
                 //Comparar si las piezas inicial y final son del mismo tipo
-                if (piezaIncial.tipoFicha == siguientePieza.tipoFicha && !coincidencias.Contains(siguientePieza))
+                if (piezaIncial.matchValue == siguientePieza.matchValue && !coincidencias.Contains(siguientePieza))
                 {
                     coincidencias.Add(siguientePieza);
                 }
@@ -370,7 +394,7 @@ public class Board : MonoBehaviour
 
         foreach (GamePiece gamePiece in gamePieces)
         {
-            matches = matches.Union(EncontrarCoincidenciasEn(gamePiece.cordenadaX, gamePiece.cordenadaY)).ToList();
+            matches = matches.Union(EncontrarCoincidenciasEn(gamePiece.coordinateX, gamePiece.coordinateY)).ToList();
         }
         return matches;
     }
@@ -379,9 +403,9 @@ public class Board : MonoBehaviour
     {
         List<GamePiece> todasLasCoincidencias = new List<GamePiece>();
 
-        for (int i = 0; i < ancho; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < altura; j++)
+            for (int j = 0; j < heigth; j++)
             {
                 var coincidencias = EncontrarCoincidenciasEn(i, j);
                 todasLasCoincidencias = todasLasCoincidencias.Union(coincidencias).ToList();
@@ -393,9 +417,9 @@ public class Board : MonoBehaviour
 
     public void ResaltarCoincidencias()
     {
-        for (int i = 0; i < ancho; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < altura; j++)
+            for (int j = 0; j < heigth; j++)
             {
                 ResaltarCoincidenciasEn(i, j);
             }
@@ -410,14 +434,14 @@ public class Board : MonoBehaviour
         {
             foreach (GamePiece p in listasCombinadas)
             {
-                ResaltarTile(p.cordenadaX, p.cordenadaY, p.GetComponent<SpriteRenderer>().color);
+                ResaltarTile(p.coordinateX, p.coordinateY, p.GetComponent<SpriteRenderer>().color);
             }
         }
     }
 
     private void ResaltarTile(int _x, int _y, Color _col)
     {
-        SpriteRenderer sr = board[_x, _y].GetComponent<SpriteRenderer>();
+        SpriteRenderer sr = m_allTiles[_x, _y].GetComponent<SpriteRenderer>();
         sr.color = _col;
     }
         
@@ -425,9 +449,9 @@ public class Board : MonoBehaviour
 
     private void ClearBoard()
     {
-        for (int _x = 0; _x < ancho; _x++)
+        for (int _x = 0; _x < width; _x++)
         {
-            for (int _y = 0; _y < altura; _y++)
+            for (int _y = 0; _y < heigth; _y++)
             {
                 ClearPieceAt(_y, _y);
             }
@@ -436,10 +460,10 @@ public class Board : MonoBehaviour
 
     private void ClearPieceAt(int x, int y)
     {
-        GamePiece pieceToClear = posiciones[x, y];
+        GamePiece pieceToClear = m_allGamePieces[x, y];
         if(pieceToClear != null)
         {
-            posiciones[x, y] = null;
+            m_allGamePieces[x, y] = null;
             Destroy(pieceToClear.gameObject);
         }
     }
@@ -449,7 +473,7 @@ public class Board : MonoBehaviour
         {
             if (gamePiece != null)
             {
-                ClearPieceAt(gamePiece.cordenadaX, gamePiece.cordenadaY);
+                ClearPieceAt(gamePiece.coordinateX, gamePiece.coordinateY);
             }
         }
     }
@@ -458,22 +482,22 @@ public class Board : MonoBehaviour
     {
         List<GamePiece> movingPieces = new List<GamePiece>();
 
-        for (int i = 0; i < altura-1; i++)
+        for (int i = 0; i < heigth-1; i++)
         {
-            if (posiciones[column, i] == null)
+            if (m_allGamePieces[column, i] == null)
             {
-                for (int j = i + 1; j < altura; j++)
+                for (int j = i + 1; j < heigth; j++)
                 {
-                    if (posiciones[column, j] != null)
+                    if (m_allGamePieces[column, j] != null)
                     {
-                        posiciones[column, j].MoverPieza(column, i, CollapseTime * (j-i));
-                        posiciones[column, i] = posiciones[column, j];
-                        posiciones[column, i].Cordenada(column, i);
-                        if (!movingPieces.Contains(posiciones[column, i]))
+                        m_allGamePieces[column, j].Move(column, i, CollapseTime * (j-i));
+                        m_allGamePieces[column, i] = m_allGamePieces[column, j];
+                        m_allGamePieces[column, i].SetCoord(column, i);
+                        if (!movingPieces.Contains(m_allGamePieces[column, i]))
                         {
-                            movingPieces.Add(posiciones[column, i]);
+                            movingPieces.Add(m_allGamePieces[column, i]);
                         }
-                        posiciones[column, j] = null;
+                        m_allGamePieces[column, j] = null;
                         break;
                     }
                 }
@@ -498,9 +522,9 @@ public class Board : MonoBehaviour
         List<int> collumnsIndex = new List<int>();
         foreach (GamePiece gamePiece in gamePieces)
         {
-            if (!collumnsIndex.Contains(gamePiece.cordenadaX))
+            if (!collumnsIndex.Contains(gamePiece.coordinateX))
             {
-                collumnsIndex.Add(gamePiece.cordenadaX);
+                collumnsIndex.Add(gamePiece.coordinateX);
             }
         }
         return collumnsIndex;
@@ -516,7 +540,7 @@ public class Board : MonoBehaviour
         yield return StartCoroutine(ClearAndCollapseColumn(gamePieces)); 
         yield return null;
         yield return StartCoroutine(RefillRoutine());
-        puedeMover = true;
+        m_playerInputEnabled = true;
     }
 
     IEnumerator ClearAndCollapseColumn(List<GamePiece> gamePieces)
@@ -551,7 +575,7 @@ public class Board : MonoBehaviour
 
     IEnumerator RefillRoutine()
     {
-        LlenarMatriz();
+        FillBoard();
         yield return null;
     }
 
@@ -561,7 +585,7 @@ public class Board : MonoBehaviour
         {
             if (gamePiece != null)
             {
-                if(gamePiece.transform.position.y - (float)gamePiece.cordenadaY > 0.001f)
+                if(gamePiece.transform.position.y - (float)gamePiece.coordinateY > 0.001f)
                 {
                     return false;
                 }
