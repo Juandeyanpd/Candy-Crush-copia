@@ -553,6 +553,7 @@ public class Board : MonoBehaviour
 
     List<GamePiece> CollapseColumn(int column, float CollapseTime = .1f)
     {
+        //Aquí escogemos una collumna para recorrerla 
         List<GamePiece> movingPieces = new List<GamePiece>();
 
         for (int i = 0; i < heigth - 1; i++)
@@ -564,12 +565,15 @@ public class Board : MonoBehaviour
                     if (m_allGamePieces[column, j] != null)
                     {
                         m_allGamePieces[column, j].Move(column, i, CollapseTime * (j-i));
+
                         m_allGamePieces[column, i] = m_allGamePieces[column, j];
                         m_allGamePieces[column, i].SetCoord(column, i);
+
                         if (!movingPieces.Contains(m_allGamePieces[column, i]))
                         {
                             movingPieces.Add(m_allGamePieces[column, i]);
                         }
+
                         m_allGamePieces[column, j] = null;
                         break;
                     }
@@ -582,6 +586,7 @@ public class Board : MonoBehaviour
     {
         List<GamePiece> movingPieces = new List<GamePiece>();
         List<int> collumnsToCollapse = GetColumns(gamePieces);
+
         foreach (int column in collumnsToCollapse)
         {
             movingPieces = movingPieces.Union(CollapseColumn(column)).ToList();
@@ -590,19 +595,26 @@ public class Board : MonoBehaviour
     }
     List<int> GetColumns(List<GamePiece> gamePieces)
     {
-        List<int> collumnsIndex = new List<int>();
-        foreach (GamePiece gamePiece in gamePieces)
+        List<int> columns = new List<int>();
+        foreach (GamePiece piece in gamePieces)
         {
-            if (!collumnsIndex.Contains(gamePiece.coordinateX))
+            if (!columns.Contains(piece.coordinateX))
             {
-                collumnsIndex.Add(gamePiece.coordinateX);
+                columns.Add(piece.coordinateX);
             }
         }
-        return collumnsIndex;
+        return columns;
     }
 
 
-    public void ResaltarCoincidencias()
+    IEnumerator ClearAndRefillRoutine(List<GamePiece> gamePieces)
+    {
+        yield return StartCoroutine(ClearAndCollapseColumn(gamePieces)); 
+        yield return null;
+        yield return StartCoroutine(RefillRoutine());
+        m_playerInputEnabled = true;
+    }
+    /*public void ResaltarCoincidencias()
     {
         for (int i = 0; i < width; i++)
         {
@@ -630,7 +642,7 @@ public class Board : MonoBehaviour
     {
         SpriteRenderer sr = m_allTiles[_x, _y].GetComponent<SpriteRenderer>();
         sr.color = _col;
-    }
+    }*/
         
 
 
@@ -638,13 +650,6 @@ public class Board : MonoBehaviour
 
 
 
-    IEnumerator ClearAndRefillRoutine(List<GamePiece> gamePieces)
-    {
-        yield return StartCoroutine(ClearAndCollapseColumn(gamePieces)); 
-        yield return null;
-        yield return StartCoroutine(RefillRoutine());
-        m_playerInputEnabled = true;
-    }
 
     IEnumerator ClearAndCollapseColumn(List<GamePiece> gamePieces)
     {
