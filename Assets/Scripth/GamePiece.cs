@@ -23,7 +23,7 @@ public class GamePiece : MonoBehaviour
         coordinateY = y;
     }
 
-    private void Init(Board board)
+    public void Init(Board board)
     {
         m_Board = board;
     }
@@ -50,7 +50,7 @@ public class GamePiece : MonoBehaviour
                 reacedDestination = true;
                 if(m_Board != null)
                 {
-                    m_Board.PiezaPosicion(this, destX, destY);
+                    m_Board.PlaceGamePiece(this, destX, destY);
                 }
                 break;
             }

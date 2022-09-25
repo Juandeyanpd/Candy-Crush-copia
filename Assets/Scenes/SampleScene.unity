@@ -370,6 +370,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &511589665
 Canvas:
   m_ObjectHideFlags: 0
@@ -734,12 +735,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 520bf92c546feea488833da984563fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
-  altura: 4
-  ancho: 4
-  cam: {fileID: 519420031}
-  borde: 1
-  prefab_Pieces:
+  width: 2
+  heigth: 2
+  borderSize: 1
+  tilePrefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
+  gamePiecesPrefabs:
   - {fileID: 2817108955154875958, guid: 6aa2534fcdef17f469db2c2b09b59828, type: 3}
   - {fileID: 1246878889374814446, guid: 04224841375634c4d8070f6da76eb74b, type: 3}
   - {fileID: 3483919263701087724, guid: faba80fc08c7c9e41a9e446e644d3211, type: 3}
@@ -748,10 +748,9 @@ MonoBehaviour:
   - {fileID: 4352367465102919165, guid: 262f09e82570bb345bb46cbe45b2efc6, type: 3}
   - {fileID: 929259759249689207, guid: c3f1e07eafb564d459c27c67ea715e2e, type: 3}
   - {fileID: 4640531390011582485, guid: 0fb37641548010140bfadcdc5b7e80d4, type: 3}
-  inicial: {fileID: 0}
-  final: {fileID: 0}
   swapTime: 0.3
-  puedeMover: 1
+  m_clickedTile: {fileID: 0}
+  m_targetTile: {fileID: 0}
   clip: {fileID: 8300000, guid: 83858c5f45d8d5744ad7708ac9b79fbc, type: 3}
   score: {fileID: 813175301}
 --- !u!4 &723624296
