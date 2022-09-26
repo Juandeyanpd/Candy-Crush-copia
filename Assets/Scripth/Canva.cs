@@ -7,7 +7,7 @@ using TMPro;
 public class Canva : MonoBehaviour
 {
     //Texto y entero de score
-    public int score = 0;
+    private int score = 0;
     public TMP_Text score_text;
 
     //Entero y texto del tiempo
@@ -18,11 +18,15 @@ public class Canva : MonoBehaviour
     public float restante;
     private bool enMarcha;
 
+    //Variable para utilizar método de Scena
+    public MainMenu menu;
+
     //Aquí se le da valor a el entero y el bool
     private void Awake()
     {
         restante = (min * 60) + seg;
         enMarcha = true;
+        //menu = FindObjectOfType<MainMenu>();
     }
 
     //Aquí está el código para hacer el temporizador
@@ -39,7 +43,13 @@ public class Canva : MonoBehaviour
             int tempMin = Mathf.FloorToInt(restante / 60);
             int tempSeg = Mathf.FloorToInt(restante % 60);
             timer_text.text = "Timer " + tempMin.ToString() + ":" + tempSeg.ToString();
+
+            if(tempSeg == 0 && tempMin == 0)
+            {
+                menu.LoadScene(0);
+            }
         }
+
     }
 
     //Se hace el texto del score
@@ -54,6 +64,4 @@ public class Canva : MonoBehaviour
         score += cantidad;
         score_text.text = "Score: " + score.ToString();
     }
-
-
 }

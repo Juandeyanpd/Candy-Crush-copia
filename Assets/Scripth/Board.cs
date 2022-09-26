@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -40,6 +41,12 @@ public class Board : MonoBehaviour
     public AudioClip clip;
     public Canva score;
 
+    //Perder
+    public MainMenu menu;
+
+    //Movimientos
+    public int movimientos;
+    public TMP_Text movimientos_text;
 
     private void Start()
     {
@@ -53,6 +60,11 @@ public class Board : MonoBehaviour
         SetupTiles();
         SetupCamera();
         FillBoard(10, .5f);
+    }
+
+    private void Update()
+    {
+        Movimiento();
     }
 
     private void SetParents()
@@ -228,12 +240,13 @@ public class Board : MonoBehaviour
                 {
                     clickedPiece.Move(clickedTile.indiceX, clickedTile.indiceY, swapTime);
                     targetPiece.Move(targetTile.indiceX, targetTile.indiceY, swapTime);
+                    movimientos--;
                     yield return new WaitForSeconds(swapTime);
                 }
                 else
                 {
                     yield return new WaitForSeconds(swapTime);
-
+                    movimientos--;
                     ClearAndRefillBoard(clickedPieceMatches.Union(targetPieceMatches).ToList());
                     Sonido();
                     score.Puntaje(100);
@@ -380,6 +393,7 @@ public class Board : MonoBehaviour
     }
     private List<GamePiece> FindMatchesAt(List<GamePiece> gamePieces, int minLenght = 3)
     {
+        //Aquí se une la lista del parámetro con la de este método
         List<GamePiece> matches = new List<GamePiece>();
 
         foreach (GamePiece piece in gamePieces)
@@ -392,7 +406,7 @@ public class Board : MonoBehaviour
 
     bool IsNextTo(Tile start, Tile end)
     {
-
+        //Aquí se revisa si el tile que seleciono y el que selecciones, esté en el rango de un tile, además de que no cuenta el diagonal
         if (Mathf.Abs(start.indiceX - end.indiceX) == 1 && start.indiceY == end.indiceY)
         {
             return true;
@@ -406,6 +420,7 @@ public class Board : MonoBehaviour
 
     private List<GamePiece> FindAllMatches()
     {
+        //Aquí se une los matches encontrados con la nueva lista 
         List<GamePiece> combinedMatches = new List<GamePiece>();
 
         for (int i = 0; i < width; i++)
@@ -422,18 +437,21 @@ public class Board : MonoBehaviour
 
     void HighlightTileOff(int x, int y)
     {
+        //Aquí se coge los spritesRenderer de los tiles que escojamos y apaga el rgb
         SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
         spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0);
     }
 
     void HighlightTileOn(int x, int y, Color col)
     {
+        //Aquí se enciende los colores de los tiles
         SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
         spriteRenderer.color = col;
     }
 
     void HighlightMatchesAt(int x, int y)
     {
+        //Aquí se escoge los tiles que se encenderan, o sea los de los matches 
         HighlightTileOff(x, y);
         var combinedMatches = FindMatchesAt( x, y);
         if (combinedMatches.Count > 0)
@@ -447,6 +465,7 @@ public class Board : MonoBehaviour
 
     void HighlightMatches()
     {
+        //Aquí se hayan las posiciones que se necesitan para buscar los matches y encenderlos
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < heigth; j++)
@@ -458,6 +477,7 @@ public class Board : MonoBehaviour
 
     void HighlightPieces(List<GamePiece> gamePieces)
     {
+        //Aquí se asegura de que las fichas sean diferente de nulas, para poder encender los tiles
         foreach (GamePiece piece in gamePieces)
         {
             if(piece != null)
@@ -625,7 +645,7 @@ public class Board : MonoBehaviour
     }
     List<int> GetColumns(List<GamePiece> gamePieces)
     {
-        //Revisa las columnas si hay un espacio vacio
+        //Revisa el indice o cordenada en X de la lista mandada por parámetro
         List<int> columns = new List<int>();
         foreach (GamePiece piece in gamePieces)
         {
@@ -640,10 +660,11 @@ public class Board : MonoBehaviour
 
     IEnumerator ClearAndRefillRoutine(List<GamePiece> gamePieces)
     {
-        //
+        //Aquí se reprime el movimiento que se puede hacer, hasta que se ejecuta lo que hay dentro del do y después se verifica que se cumpla el while, y si no se cumple entonces permite otra vez el movimiento
         m_playerInputEnabled = false;
         List<GamePiece> matches = gamePieces;
 
+        //Aquí se verifica si ya no hay matches para poder otra vez permitir el movimiento del jugador
         do
         {
             yield return StartCoroutine(ClearAndCollapseRoutine(gamePieces));
@@ -651,12 +672,15 @@ public class Board : MonoBehaviour
             yield return StartCoroutine(RefillRoutine());
             matches = FindAllMatches();
             yield return new WaitForSeconds(.5f);
+            Debug.Log("Esá falso");
         }
         while (matches.Count != 0);
+        Debug.Log("true");
         m_playerInputEnabled = true;
     }
     IEnumerator ClearAndCollapseRoutine(List<GamePiece> gamePieces)
     {
+        //Aquí se limpian las fichas de la lista del parámetro, además de organizar la columna e intanciar otras fichas 
         List<GamePiece> movingPieces = new List<GamePiece>();
         List<GamePiece> matches = new List<GamePiece>();
         HighlightPieces(gamePieces);
@@ -702,6 +726,7 @@ public class Board : MonoBehaviour
 
     private bool isCollpased(List<GamePiece> gamePieces)
     {
+        //Este se revisa si ya las fichas llegaron a su destino cuando se colapsa una columna
         foreach (GamePiece piece in gamePieces)
         {
             if (piece != null)
@@ -719,5 +744,14 @@ public class Board : MonoBehaviour
     {
         //Aquí ejecuto mi sonido (al momento de hacer un match)
         AudioSource.PlayClipAtPoint(clip, gameObject.transform.position);
+    }
+
+    void Movimiento()
+    {
+        movimientos_text.text = "Movement: " + movimientos.ToString();
+        if(movimientos == 0)
+        {
+            menu.LoadScene(0);
+        }
     }
 }
