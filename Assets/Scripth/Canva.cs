@@ -6,21 +6,26 @@ using TMPro;
 
 public class Canva : MonoBehaviour
 {
+    //Texto y entero de score
     public int score = 0;
     public TMP_Text score_text;
 
+    //Entero y texto del tiempo
     [SerializeField] int min, seg;
     [SerializeField] TMP_Text timer_text;
 
+    //Son variables del tiempo
     public float restante;
     private bool enMarcha;
 
+    //Aquí se le da valor a el entero y el bool
     private void Awake()
     {
         restante = (min * 60) + seg;
         enMarcha = true;
     }
 
+    //Aquí está el código para hacer el temporizador
     void Update()
     {
         if(enMarcha)
@@ -36,11 +41,14 @@ public class Canva : MonoBehaviour
             timer_text.text = "Timer " + tempMin.ToString() + ":" + tempSeg.ToString();
         }
     }
+
+    //Se hace el texto del score
     public void Start()
     {
         score_text.text = "Score: " + score.ToString();
     }
 
+    //Ya este es para que al momento de enviarle los puntos, se actualicen en el score
     public void Puntaje(int cantidad)
     {
         score += cantidad;

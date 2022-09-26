@@ -56,6 +56,7 @@ public class Board : MonoBehaviour
 
     private void SetParents()
     {
+        //Aquí "inicializamos los tranforms y lo volvemos hijos de el empty que tiene este scripth
         if(tileParent == null)
         {
             tileParent = new GameObject().transform;
@@ -128,8 +129,8 @@ public class Board : MonoBehaviour
             }
         }
 
-        //
-        int maxIterations = 20;
+        //??
+        int maxIterations = 100;
         int Iterations = 0;
 
         bool isFilled = false;
@@ -168,7 +169,7 @@ public class Board : MonoBehaviour
 
     public void ClickedTile(Tile tile)
     {
-
+        //Aquí verificamos que el tile sea nulo y le colocamos el tile parámetro
         if (m_clickedTile == null)
         {
             m_clickedTile = tile;
@@ -177,6 +178,7 @@ public class Board : MonoBehaviour
     }
     public void DragToTile(Tile tile)
     {
+        //Aquí observamos si el tile es diferente de nulo y sí son vecinos los tiles que le damos, para ya colocarle el tile del parámetro
         if (m_clickedTile != null && IsNextTo(m_clickedTile, tile))
         {
             m_targetTile = tile;
@@ -185,6 +187,7 @@ public class Board : MonoBehaviour
     }
     public void ReleaseTile()
     {
+        //Aquí observamos si los tiles son diferentes de cero, para que se ejecute el método de cambiar los tiles y después volverlos nulos
         if (m_clickedTile != null && m_targetTile != null)
         {
             SwitchTiles(m_clickedTile, m_targetTile);
@@ -196,11 +199,13 @@ public class Board : MonoBehaviour
 
     public void SwitchTiles(Tile m_clickedTile, Tile m_targetTile)
     {
+        //Aquí ejecutamos el método de cambio de tiles rutina 
         StartCoroutine(SwitchTilesRoutine(m_clickedTile, m_targetTile));
     }
 
     IEnumerator SwitchTilesRoutine(Tile clickedTile, Tile targetTile)
     {
+        //Aquí hacemos el movimiento de las fichas o el cambio entre ellas
         if (m_playerInputEnabled)
         {
             GamePiece clickedPiece = m_allGamePieces[clickedTile.indiceX, clickedTile.indiceY];
@@ -213,9 +218,11 @@ public class Board : MonoBehaviour
 
                 yield return new WaitForSeconds(swapTime);
 
+                //??
                 List<GamePiece> clickedPieceMatches = FindMatchesAt(clickedTile.indiceX, clickedTile.indiceY);
                 List<GamePiece> targetPieceMatches = FindMatchesAt(targetTile.indiceX, targetTile.indiceY);
 
+                //Aquí verificamos si no hay matches, entonces las fichas no cambian, sino que vuelven a su lugar; ya en el else, cuando se hace el movimiento se limpia y rellena las fichas de dichos tiles, además del puntaje y sonido.
                 if (clickedPieceMatches.Count == 0 && targetPieceMatches.Count == 0)
                 {
                     clickedPiece.Move(clickedTile.indiceX, clickedTile.indiceY, swapTime);
@@ -238,6 +245,7 @@ public class Board : MonoBehaviour
 
     private void ClearAndRefillBoard(List<GamePiece> gamePieces)
     {
+        //Aquí se ejecuta el método de rutina de limpiar y rellenar con ficha nueva
         StartCoroutine(ClearAndRefillRoutine(gamePieces));
     }
 
@@ -249,6 +257,7 @@ public class Board : MonoBehaviour
         //Crear una referencia al gamepiece inicial
         GamePiece startPiece = null;
 
+        //Aquí escogemos una ficha (la cual es la primera seleccionada
         if (IsWithBounds(startX, startY))
         {
             startPiece = m_allGamePieces[startX, startY];
@@ -268,7 +277,8 @@ public class Board : MonoBehaviour
 
         int maxValue = width > heigth ? width : heigth;
 
-        for (int i = 1; i < maxValue - 1; i++)
+        //Aquí es para recorrer en X y Y una culumna y fila, para saber si hay matchs????????????????????????
+        for (int i = 1; i < maxValue; i++)
         {
             nextX = startX + (int)Mathf.Clamp(searchDirection.x, -1, 1) * i;
             nextY = startY + (int)Mathf.Clamp(searchDirection.y, -1, 1) * i;
@@ -278,6 +288,7 @@ public class Board : MonoBehaviour
                 break;
             }
 
+            //Aquí se coge la siguiente ficha para verificar si es igual a la del comienzo para saber si agregarla en la lista y tener un posible match
             GamePiece nextPiece = m_allGamePieces[nextX, nextY];
 
             if (nextPiece == null)
@@ -299,6 +310,7 @@ public class Board : MonoBehaviour
 
         }
 
+        //Aquí se dice que el mínimo para un match es minLenght(3)
         if (matches.Count >= minLenght)
         {
             return matches;
@@ -310,6 +322,7 @@ public class Board : MonoBehaviour
     }
     List<GamePiece> FindVerticalMatches(int startX, int startY, int minLenght = 3)
     {
+        //Se utiliza el recorreer una columna y fila, para encontrar posibles matchs, esta es la de vertical, abajo y arriba
         List<GamePiece> upwardMatches = FindMatches(startX, startY, Vector2.up, 2);
         List<GamePiece> downwardMatches = FindMatches(startX, startY, Vector2.down, 2);
 
@@ -328,6 +341,7 @@ public class Board : MonoBehaviour
     }
     List<GamePiece> FindHorizontalMatches(int startX, int startY, int minLenght = 3)
     {
+        //Se utiliza el recorreer una columna y fila, para encontrar posibles matchs, esta es la de horizontal, derecha y izquierda
         List<GamePiece> rightMatches = FindMatches(startX, startY, Vector2.right, 2);
         List<GamePiece> leftMatches = FindMatches(startX, startY, Vector2.left, 2);
 
@@ -344,10 +358,11 @@ public class Board : MonoBehaviour
         var combinedMatches = rightMatches.Union(leftMatches).ToList();
         return combinedMatches.Count >= minLenght ? combinedMatches : null;
     }
-    private List<GamePiece> FindMatchesAt(int _x, int _y, int minLenght = 3)
+    private List<GamePiece> FindMatchesAt(int x, int y, int minLenght = 3)
     {
-        List<GamePiece> horizontalMatches = FindHorizontalMatches(_x, _y, minLenght);
-        List<GamePiece> verticalMatches = FindVerticalMatches(_x, _y, minLenght);
+        //Ya aquí es donde se una tanto buscar en vertical y horizontal, para buscar mathcs
+        List<GamePiece> horizontalMatches = FindHorizontalMatches(x, y, minLenght);
+        List<GamePiece> verticalMatches = FindVerticalMatches(x, y, minLenght);
 
         if (horizontalMatches == null)
         {
@@ -645,7 +660,7 @@ public class Board : MonoBehaviour
         while(!isFinished)
         {
             ClearPieceAt(gamePieces);
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(.25f);
 
             movingPieces = CollapseColumn(gamePieces);
             while(!isCollpased(gamePieces))
