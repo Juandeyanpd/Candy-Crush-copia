@@ -95,8 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e44750858f91e4687f8d5e681f1b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cordenadaX: 0
-  cordenadaY: 0
+  coordinateX: 0
+  coordinateY: 0
+  m_Board: {fileID: 0}
   curve:
     serializedVersion: 2
     m_Curve:
@@ -121,6 +122,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  tipoInterpolacion: 0
-  tipoFicha: 5
-  board: {fileID: 0}
+  interpolation: 0
+  matchValue: 5

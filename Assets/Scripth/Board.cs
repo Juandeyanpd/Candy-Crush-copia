@@ -40,6 +40,7 @@ public class Board : MonoBehaviour
     public AudioClip clip;
     public Canva score;
 
+
     private void Start()
     {
         //Se llaman los métodos desde que comienza el play y inicializa
@@ -130,7 +131,7 @@ public class Board : MonoBehaviour
         }
 
         //??
-        int maxIterations = 100;
+        int maxIterations = 20;
         int Iterations = 0;
 
         bool isFilled = false;
@@ -582,6 +583,7 @@ public class Board : MonoBehaviour
         //Aquí escogemos una collumna para recorrerla 
         List<GamePiece> movingPieces = new List<GamePiece>();
 
+        //Se revisa si hay espacios vacios y si hay piezas para hacerlas caer y darle sus nuevas cordenadas
         for (int i = 0; i < heigth - 1; i++)
         {
             if (m_allGamePieces[column, i] == null)
@@ -610,8 +612,10 @@ public class Board : MonoBehaviour
     }
     List<GamePiece> CollapseColumn(List<GamePiece> gamePieces)
     {
+        //Aquí recivimos dos listas, una para mover las piezas y la otra que recive las colmunas que necesitan que se revisen y colapsen
         List<GamePiece> movingPieces = new List<GamePiece>();
         List<int> collumnsToCollapse = GetColumns(gamePieces);
+
 
         foreach (int column in collumnsToCollapse)
         {
@@ -621,6 +625,7 @@ public class Board : MonoBehaviour
     }
     List<int> GetColumns(List<GamePiece> gamePieces)
     {
+        //Revisa las columnas si hay un espacio vacio
         List<int> columns = new List<int>();
         foreach (GamePiece piece in gamePieces)
         {
@@ -635,7 +640,8 @@ public class Board : MonoBehaviour
 
     IEnumerator ClearAndRefillRoutine(List<GamePiece> gamePieces)
     {
-        m_playerInputEnabled = true;
+        //
+        m_playerInputEnabled = false;
         List<GamePiece> matches = gamePieces;
 
         do
