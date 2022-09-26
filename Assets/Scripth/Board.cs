@@ -6,28 +6,37 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    //Tamaño del Board
     public int width;
     public int heigth;
 
+    //Aumentar más el Size de la cámara
     public int borderSize;
 
+    //Prefabs de objetos en la escena
     public GameObject tilePrefab;
     public GameObject[] gamePiecesPrefabs;
 
+    //Cambiar el tiempo de movimiento o lo que desees en dicho rango
     [Range(0.1f, .5f)]
     public float swapTime = .3f;
 
+    //Conjunto de los arrays, para recorrer la Board
     Tile[,] m_allTiles;
     GamePiece[,] m_allGamePieces;
 
+    //Necesario para mover las fichas
     [SerializeField] Tile m_clickedTile;
     [SerializeField] Tile m_targetTile;
 
+    //Bandera para permitir o no  el cambio de fichas
     bool m_playerInputEnabled = true;
 
+    //Para organizar los tiles y fichas
     Transform tileParent;
     Transform gamePieceParent;
 
+    //Audio y música
     public AudioClip clip;
     public Canva score;
 
@@ -96,6 +105,7 @@ public class Board : MonoBehaviour
 
     public void FillBoard(int falseOffSet = 0, float moveTime = .1f)
     {
+        //Aquí llenamos el board con las fichas
         List<GamePiece> addedPieces = new List<GamePiece>();
 
         for (int i = 0; i < width; i++)
@@ -118,6 +128,7 @@ public class Board : MonoBehaviour
             }
         }
 
+        //
         int maxIterations = 20;
         int Iterations = 0;
 
