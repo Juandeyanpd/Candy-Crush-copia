@@ -63,8 +63,6 @@ public class Board : MonoBehaviour
         SetupTiles();
         SetupCamera();
         FillBoard(10, .5f);
-
-        efect.SetActive(false);
     }
 
     private void Update()
@@ -147,7 +145,7 @@ public class Board : MonoBehaviour
             }
         }
 
-        //??
+        //Si hay coincidencias en el inicio, se cambian por piezas random
         int maxIterations = 20;
         int Iterations = 0;
 
@@ -497,15 +495,15 @@ public class Board : MonoBehaviour
     {
         //Aquí escojemos las piezas de juego que le mandemos de el arrays de piezas, para volverlas nullas y destruirlas; además de apagar el Highlight
         GamePiece pieceToClear = m_allGamePieces[x, y];
-        GameObject efectToClear = Instantiate(efect, new Vector2(x, y), Quaternion.identity);
         if(pieceToClear != null)
         {
             m_allGamePieces[x, y] = null;
-            Destroy(pieceToClear.gameObject);
-            Instantiate(efectToClear);
+            Destroy(pieceToClear.gameObject, swapTime);
+            
+            GameObject efectToClear = Instantiate(efect, new Vector2(x, y), Quaternion.identity);
+            Destroy(efectToClear, swapTime);
         }
         HighlightTileOff( x, y);
-        Destroy(efectToClear.gameObject);
     }
     private void ClearPieceAt(List<GamePiece> gamePieces)
     {

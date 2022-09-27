@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Ganaste.unity
     guid: 09b8b09e8798e1149a67a2a48349760c
+  - enabled: 1
+    path: Assets/Scenes/Level 4.unity
+    guid: bba06b9d2412ef5409ae769bbb46f969
+  - enabled: 1
+    path: Assets/Scenes/Level 5.unity
+    guid: 05f69f7e1091e5c4cb49bc68b51b79e4
   m_configObjects: {}
