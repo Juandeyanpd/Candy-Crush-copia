@@ -8,6 +8,7 @@ public class Canva : MonoBehaviour
 {
     //Texto y entero de score
     private int score = 0;
+    public int winScore;
     public TMP_Text score_text;
 
     //Entero y texto del tiempo
@@ -15,7 +16,7 @@ public class Canva : MonoBehaviour
     [SerializeField] TMP_Text timer_text;
 
     //Son variables del tiempo
-    public float restante;
+    private float restante;
     private bool enMarcha;
 
     //Variable para utilizar método de Scena
@@ -46,7 +47,7 @@ public class Canva : MonoBehaviour
 
             if(tempSeg == 0 && tempMin == 0)
             {
-                menu.LoadScene(0);
+                menu.LoadScene(4);
             }
         }
 
@@ -63,5 +64,9 @@ public class Canva : MonoBehaviour
     {
         score += cantidad;
         score_text.text = "Score: " + score.ToString();
+        if(score == winScore)
+        {
+            menu.LoadScene(5);
+        }
     }
 }

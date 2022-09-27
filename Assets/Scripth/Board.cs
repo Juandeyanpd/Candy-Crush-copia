@@ -48,6 +48,9 @@ public class Board : MonoBehaviour
     public int movimientos;
     public TMP_Text movimientos_text;
 
+    //Animación
+    public GameObject efect;
+
     private void Start()
     {
         //Se llaman los métodos desde que comienza el play y inicializa
@@ -60,6 +63,8 @@ public class Board : MonoBehaviour
         SetupTiles();
         SetupCamera();
         FillBoard(10, .5f);
+
+        efect.SetActive(false);
     }
 
     private void Update()
@@ -492,12 +497,15 @@ public class Board : MonoBehaviour
     {
         //Aquí escojemos las piezas de juego que le mandemos de el arrays de piezas, para volverlas nullas y destruirlas; además de apagar el Highlight
         GamePiece pieceToClear = m_allGamePieces[x, y];
+        GameObject efectToClear = Instantiate(efect, new Vector2(x, y), Quaternion.identity);
         if(pieceToClear != null)
         {
             m_allGamePieces[x, y] = null;
             Destroy(pieceToClear.gameObject);
+            Instantiate(efectToClear);
         }
         HighlightTileOff( x, y);
+        Destroy(efectToClear.gameObject);
     }
     private void ClearPieceAt(List<GamePiece> gamePieces)
     {
@@ -746,12 +754,15 @@ public class Board : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, gameObject.transform.position);
     }
 
+
     void Movimiento()
     {
+        //Aquí se coloca el texto de movimientos
         movimientos_text.text = "Movement: " + movimientos.ToString();
+        //Si llega a cero, pierdes
         if(movimientos == 0)
         {
-            menu.LoadScene(0);
+            menu.LoadScene(4);
         }
     }
 }

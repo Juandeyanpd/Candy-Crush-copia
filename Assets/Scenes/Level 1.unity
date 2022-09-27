@@ -785,7 +785,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 18.828003, y: 14.200073}
+  m_AnchoredPosition: {x: 18.828003, y: 14.200134}
   m_SizeDelta: {x: 358.2229, y: 58.745155}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &633085787
@@ -929,8 +929,9 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: 83858c5f45d8d5744ad7708ac9b79fbc, type: 3}
   score: {fileID: 813175301}
   menu: {fileID: 87795872}
-  movimientos: 20
+  movimientos: 25
   movimientos_text: {fileID: 302822171}
+  efect: {fileID: 7223634682459546699, guid: efe20548f72d4554ebcba1f5f8401b98, type: 3}
 --- !u!4 &723624296
 Transform:
   m_ObjectHideFlags: 0
@@ -988,11 +989,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05bbfef17637ddc4f87f261f82f0eaea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winScore: 1000
   score_text: {fileID: 633085787}
   min: 1
-  seg: 10
+  seg: 20
   timer_text: {fileID: 35102360}
-  restante: 0
   menu: {fileID: 87795872}
 --- !u!1 &1636820769
 GameObject:

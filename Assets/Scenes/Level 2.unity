@@ -519,7 +519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.29411766, g: 0.29411766, b: 0.29411766, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -707,8 +707,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 520bf92c546feea488833da984563fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  heigth: 10
+  width: 6
+  heigth: 6
   borderSize: 1
   tilePrefab: {fileID: 7703397191405488344, guid: 034f7b28a2ea0914fb34fd3253eacc62, type: 3}
   gamePiecesPrefabs:
@@ -722,8 +722,10 @@ MonoBehaviour:
   m_clickedTile: {fileID: 0}
   m_targetTile: {fileID: 0}
   clip: {fileID: 8300000, guid: 83858c5f45d8d5744ad7708ac9b79fbc, type: 3}
-  score: {fileID: 0}
-  menu: {fileID: 0}
+  score: {fileID: 1652881334}
+  menu: {fileID: 76025269}
+  movimientos: 20
+  movimientos_text: {fileID: 1966071811}
 --- !u!4 &1536185176
 Transform:
   m_ObjectHideFlags: 0
@@ -781,13 +783,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05bbfef17637ddc4f87f261f82f0eaea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winScore: 1500
   score_text: {fileID: 974418594}
-  movimientos_text: {fileID: 1966071811}
-  maxMovimientos: 5
   min: 1
-  seg: 10
+  seg: 0
   timer_text: {fileID: 270473602}
-  restante: 0
   menu: {fileID: 76025269}
 --- !u!1 &1756436536
 GameObject:
