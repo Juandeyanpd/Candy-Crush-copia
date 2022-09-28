@@ -64,7 +64,7 @@ public class Canva : MonoBehaviour
     {
         score += cantidad;
         score_text.text = "Score: " + score.ToString();
-        if(score == winScore)
+        if(score >= winScore)
         {
             menu.LoadScene(5);
         }

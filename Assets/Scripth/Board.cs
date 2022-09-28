@@ -234,7 +234,7 @@ public class Board : MonoBehaviour
 
                 yield return new WaitForSeconds(swapTime);
 
-                //??
+                
                 List<GamePiece> clickedPieceMatches = FindMatchesAt(clickedTile.indiceX, clickedTile.indiceY);
                 List<GamePiece> targetPieceMatches = FindMatchesAt(targetTile.indiceX, targetTile.indiceY);
 
@@ -243,16 +243,23 @@ public class Board : MonoBehaviour
                 {
                     clickedPiece.Move(clickedTile.indiceX, clickedTile.indiceY, swapTime);
                     targetPiece.Move(targetTile.indiceX, targetTile.indiceY, swapTime);
-                    movimientos--;
                     yield return new WaitForSeconds(swapTime);
+                    movimientos--;
+                    m_playerInputEnabled = true;
                 }
                 else
                 {
-                    yield return new WaitForSeconds(swapTime);
                     movimientos--;
+                    yield return new WaitForSeconds(swapTime);
                     ClearAndRefillBoard(clickedPieceMatches.Union(targetPieceMatches).ToList());
+
                     Sonido();
                     score.Puntaje(100);
+                    if(clickedPieceMatches.Count >= 4)
+                    {
+                        score.Puntaje(150);
+                        Sonido();
+                    }
                 }
             }
         }
@@ -390,7 +397,10 @@ public class Board : MonoBehaviour
         {
             verticalMatches = new List<GamePiece>();
         }
-
+        if(horizontalMatches.Count != 0 && verticalMatches.Count != 0)
+        {
+            score.Puntaje(300);
+        }
         var combinedMatches = horizontalMatches.Union(verticalMatches).ToList();
         return combinedMatches;
     }
@@ -579,8 +589,11 @@ public class Board : MonoBehaviour
                 randomPiece.transform.position = new Vector2(x, y + falseOffset);
                 randomPiece.Move( x, y, moveTime);
             }
+            if (gamePieceParent != null)
+            {
+                randomPiece.transform.parent = gamePieceParent;
+            }
         }
-        randomPiece.transform.parent = gamePieceParent;
 
         return randomPiece;
     }
@@ -667,7 +680,7 @@ public class Board : MonoBehaviour
     IEnumerator ClearAndRefillRoutine(List<GamePiece> gamePieces)
     {
         //Aquí se reprime el movimiento que se puede hacer, hasta que se ejecuta lo que hay dentro del do y después se verifica que se cumpla el while, y si no se cumple entonces permite otra vez el movimiento
-        m_playerInputEnabled = false;
+        m_playerInputEnabled = true;
         List<GamePiece> matches = gamePieces;
 
         //Aquí se verifica si ya no hay matches para poder otra vez permitir el movimiento del jugador
@@ -678,19 +691,19 @@ public class Board : MonoBehaviour
             yield return StartCoroutine(RefillRoutine());
             matches = FindAllMatches();
             yield return new WaitForSeconds(.5f);
-            Debug.Log("Esá falso");
         }
         while (matches.Count != 0);
-        Debug.Log("true");
         m_playerInputEnabled = true;
     }
     IEnumerator ClearAndCollapseRoutine(List<GamePiece> gamePieces)
     {
+        int comb = 0;
         //Aquí se limpian las fichas de la lista del parámetro, además de organizar la columna e intanciar otras fichas 
         List<GamePiece> movingPieces = new List<GamePiece>();
         List<GamePiece> matches = new List<GamePiece>();
         HighlightPieces(gamePieces);
         yield return new WaitForSeconds(.5f);
+
         bool isFinished = false;
 
         while(!isFinished)
@@ -709,11 +722,25 @@ public class Board : MonoBehaviour
 
             if (matches.Count == 0)
             {
+                m_playerInputEnabled = true;
+                comb = 0;
                 isFinished = true;
                 break;
             }
             else
             {
+                m_playerInputEnabled = false;
+                comb++;
+                if(comb >= 3)
+                {
+                    score.Puntaje(450);
+                    comb = 0;
+                }
+                if(comb == 1)
+                {
+                    score.Puntaje(150);
+                    comb = 0;
+                }
                 yield return StartCoroutine(ClearAndCollapseRoutine(matches));
             }
         }
@@ -725,6 +752,7 @@ public class Board : MonoBehaviour
     {
         //Esta llama el método de rellenar todo el tablero
         FillBoard(10, .5f);
+        m_playerInputEnabled = false;
         yield return null;
     }
 
