@@ -397,11 +397,34 @@ public class Board : MonoBehaviour
         {
             verticalMatches = new List<GamePiece>();
         }
-        if(horizontalMatches.Count != 0 && verticalMatches.Count != 0)
+
+        var combinedMatches = horizontalMatches.Union(verticalMatches).ToList();
+
+        if (horizontalMatches.Count > 0 && verticalMatches.Count > 0)
         {
+            int vecinos = 0;
+
+            for (int i = 1; i < combinedMatches.Count; i++)
+            {
+
+                if (IsNextTo(horizontalMatches[0], horizontalMatches[i]))
+                {
+                    vecinos++;
+                }
+
+                if(vecinos >= 3)
+                {
+                    Debug.Log("Es una T");
+                }
+                if (vecinos == 2)
+                {
+                    Debug.Log("Es una L");
+                }
+
+            }
             score.Puntaje(300);
         }
-        var combinedMatches = horizontalMatches.Union(verticalMatches).ToList();
+
         return combinedMatches;
     }
     private List<GamePiece> FindMatchesAt(List<GamePiece> gamePieces, int minLenght = 3)
@@ -425,6 +448,19 @@ public class Board : MonoBehaviour
             return true;
         }
         if (Mathf.Abs(start.indiceY - end.indiceY) == 1 && start.indiceX == end.indiceX)
+        {
+            return true;
+        }
+        return false;
+    }
+    bool IsNextTo(GamePiece start, GamePiece end)
+    {
+        //Aquí se revisa si el tile que seleciono y el que selecciones, esté en el rango de un tile, además de que no cuenta el diagonal
+        if (Mathf.Abs(start.coordinateX - end.coordinateX) == 1 && start.coordinateY == end.coordinateY)
+        {
+            return true;
+        }
+        if (Mathf.Abs(start.coordinateY - end.coordinateY) == 1 && start.coordinateX == end.coordinateX)
         {
             return true;
         }
